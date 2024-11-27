@@ -1,4 +1,4 @@
-org 0x7E00
+org 0x8400
 bits 16
 
 %include "macros.asm"
@@ -7,7 +7,7 @@ jmp _start
 nop
 
 ; header
-bisos_name: db "BISOS"
+bisos_name: db "BISOS kernel"
 bisos_version: db "1.x"
 bisos_information: db " created by bis "
 
@@ -24,15 +24,12 @@ _start:
     add sp, 2
     push 0x0101
     call offsetcursor
-    push msgl_hello_world_len
-    push msgl_hello_world
-    call putl
-    add sp, 4
+    mov ah, 0x00
+    mov bx, msg_hello_world
+    int 85h
     call offsetcursor
-    push msgl_how_len
-    push msgl_how
-    call putl
-    add sp, 4
+    mov bx, msg_how
+    int 85h
     call offsetcursor
     add sp, 2
     jmp typingsimulator2023
@@ -198,16 +195,14 @@ helpmsg:
     ret
 
 db " includes "
-db "    put.asm    "
-%include "put.asm"
 db "  stdio.asm  "
 %include "stdio.asm"
+db " interrupts.asm "
+%include "interrupts.asm"
 
 db " symbols/constants "
-msgl_hello_world: db "TYPING SIMULATOR 2023", ENDL
-msgl_hello_world_len equ $-msgl_hello_world
-msgl_how: db "to exit this mode, well, good luck...", ENDL
-msgl_how_len equ $-msgl_how
+msg_hello_world: db "TYPING SIMULATOR 2023", CRLFNULL
+msg_how: db "to exit this mode, well, good luck...", CRLFNULL
 msg_escaped: db "you have escaped from typing simulator 2023. it was nice meeting you.", CRLFNULL
 msg_help: db "well your heart's in the right place. commands are the way to go here", CRLFNULL
 dword_exit: db "exit"

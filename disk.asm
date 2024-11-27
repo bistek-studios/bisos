@@ -21,4 +21,3 @@ disk_error:
 
 disk_loop:
     jmp $
-
