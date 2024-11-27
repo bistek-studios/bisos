@@ -18,6 +18,30 @@ putc:
     pop bp
     ret
 
+db " putcfrommem "
+putcfrommem:
+    push bp
+    mov bp, sp
+
+    push eax
+    push ebx
+    push si
+
+    mov si, [bp+4]
+
+    mov al, [si]
+    mov ah, 0x0E
+    mov bx, 0
+    int 10h
+
+    pop si
+    pop ebx
+    pop eax
+
+    mov sp, bp
+    pop bp
+    ret
+
 db " putcfromax "
 putcfromax:
     push bp

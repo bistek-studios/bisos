@@ -55,8 +55,57 @@ cursorpos:
 
     mov ah, 0x03
     mov bh, 0
+    int 10h
 
     pop bx
+    pop ax
+
+    mov sp, bp
+    pop bp
+    ret
+
+global offsetcursor
+offsetcursor:
+    push bp
+    mov bp, sp
+
+    push ax
+    push dx
+
+    call cursorpos
+    mov ah, [bp+4]
+    mov al, [bp+5]
+    add dh, ah
+    add dl, al
+    push dx
+    call movecursor
+    pop dx
+    
+    pop dx
+    pop ax
+
+    mov sp, bp
+    pop bp
+    ret
+
+global offsetcursornegative
+offsetcursornegative:
+    push bp
+    mov bp, sp
+
+    push ax
+    push dx
+
+    call cursorpos
+    mov ah, [bp+4]
+    mov al, [bp+5]
+    sub dh, ah
+    sub dl, al
+    push dx
+    call movecursor
+    pop dx
+    
+    pop dx
     pop ax
 
     mov sp, bp

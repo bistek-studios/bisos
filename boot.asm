@@ -8,7 +8,7 @@ nop
 %include "macros.asm"
 
 ; constants
-KERNEL_OFFSET equ 0x500 ; where to load the kernel to
+KERNEL_OFFSET equ 0x7E00 ; where to load the kernel to
 
 ; symbols
 BOOT_DRIVE:
@@ -30,7 +30,7 @@ start:
 
     ; setup registers for disk load call
     mov bx, KERNEL_OFFSET ; bx -> destination
-    mov dh, 2             ; dh -> num sectors
+    mov dh, 8             ; dh -> num sectors
     mov cl, 0x02 ; start from sector 2
                  ; (as sector 1 is our boot sector)
 
