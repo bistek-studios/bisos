@@ -1,0 +1,2 @@
+%define ENDL 0x0D, 0x0A
+%define CRLFNULL 0x0D, 0X0A, 0

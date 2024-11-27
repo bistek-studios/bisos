@@ -1,0 +1,4 @@
+#!/usr/bin/env shell
+chmod +x compile.sh
+chmod +x run.sh
+chmod +x test.sh
