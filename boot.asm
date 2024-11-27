@@ -14,15 +14,10 @@ KERNEL_OFFSET equ 0x500 ; where to load the kernel to
 BOOT_DRIVE:
     db 0
     db 0
-msg_hello_world: db "Hello, world!", CRLFNULL 
-msg_bad_time: db ENDL, ENDL, "you're going to have a BAAD time", CRLFNULL
 
 ; includes
 includes:
     db "   included   "
-.put:
-    db "    put.asm    "
-    %include "put.asm"
 .disk:
     db "   disk.asm   "
     %include "disk.asm"
@@ -39,12 +34,6 @@ start:
     ; setup stack
     mov bp, 0x9000
     mov sp, bp
-
-    ; print messages
-    push msg_hello_world
-    call puts
-    push msg_bad_time
-    call puts
 
     ; setup registers for disk load call
     mov bx, KERNEL_OFFSET ; bx -> destination
