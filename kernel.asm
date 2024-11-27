@@ -6,6 +6,11 @@ bits 16
 jmp _start
 nop
 
+; header
+bisos_name: db "BISOS"
+bisos_version: db "1.x"
+bisos_information: db " created by bis "
+
 db " code "
 global _start
 _start:

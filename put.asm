@@ -1,4 +1,4 @@
-
+db " putc "
 putc:
     push bp
     mov bp, sp
@@ -18,6 +18,7 @@ putc:
     pop bp
     ret
 
+db " putcfromax "
 putcfromax:
     push bp
     mov bp, sp
@@ -34,6 +35,7 @@ putcfromax:
     pop bp
     ret
 
+db " puts "
 puts:
     push bp
     mov bp, sp
@@ -56,6 +58,7 @@ puts:
     pop bp
     ret
 
+db " putd "
 putd:
     push bp
     mov bp, sp
@@ -74,6 +77,7 @@ putd:
     pop bp
     ret
 
+db " putl "
 putl:
     push bp
     mov bp, sp
