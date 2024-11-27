@@ -1,12 +1,12 @@
 org 0x500
 bits 16
 
-; macros
 %include "macros.asm"
 
 jmp _start
 nop
 
+db " code "
 global _start
 _start:
     push 79
@@ -72,20 +72,18 @@ typingsimulator2023:
     pop ax
     jmp .returntoloop
 
-; includes
-includes:
-    db "   included   "
-.put:
-    db "    put.asm    "
-    %include "put.asm"
-.disk:
-    db "  stdio.asm  "
-    %include "stdio.asm"
+db " includes "
+db "    put.asm    "
+%include "put.asm"
+db "  stdio.asm  "
+%include "stdio.asm"
 
-; symbols/constants
+db " symbols/constants "
 msgl_hello_world: db "TYPING SIMULATOR 2023", ENDL
 msgl_hello_world_len equ $-msgl_hello_world
 msgl_how: db "to exit this mode, type, well, good luck...", ENDL
 msgl_how_len equ $-msgl_how
 
-times 1024-($-$$) db 0
+db "magic padding"
+times 999-($-$$) db 0
+yeah: db "end! thanks for wamtching"

@@ -1,7 +1,6 @@
 
 disk_load:
     pusha
-    push dx
 
     mov ah, 0x02 ; read mode
     mov al, dh   ; read dh number of sectors
@@ -14,17 +13,10 @@ disk_load:
     int 0x13      ; BIOS interrupt
     jc disk_error ; check carry bit for error
 
-    pop dx     ; get back original number of sectors to read
-    cmp al, dh ; BIOS sets 'al' to the # of sectors actually read
-               ; compare it to 'dh' and error out if they are !=
-    jne sectors_error
     popa
     ret
 
 disk_error:
-    jmp disk_loop
-
-sectors_error:
     jmp disk_loop
 
 disk_loop:
