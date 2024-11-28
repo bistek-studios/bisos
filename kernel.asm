@@ -24,15 +24,18 @@ _start:
     mov al, 0x76
     mov di, 0x700
     int 0xFE
+    push 0x0100
+    call offsetcursor
+    add sp, 2
     mov dword [0x704], 0x00000A0D
     mov bx, 0x700
     int 0x85
     push 0x0100
     call offsetcursor
+    add sp, 2
     mov bx, msg_test
     mov ah, 0
     int 0x85
-    add sp, 2
     push 0x0101
     call offsetcursor
     add sp, 2
@@ -105,6 +108,7 @@ typingsimulator2023:
     mov ebx, dword [dword_rstr]
     cmp eax, ebx
     jne .clrs
+    call disk_reset
     jmp 0x0000:0x7c00
 .clrs:
     mov eax, dword [buffer]
@@ -235,6 +239,8 @@ db "  stdio.asm  "
 %include "stdio.asm"
 db " interrupts.asm "
 %include "interrupts.asm"
+db " disk.asm "
+%include "disk.asm"
 
 db " symbols/constants "
 msg_hello_world: db "TYPING SIMULATOR 2023", CRLFNULL
@@ -254,4 +260,4 @@ buffer:
 bufferpointer: dw EMPTY
 bufferdecoded: times 2 db 0
 
-times 2048-($-$$) db 0
+times (5*512)-($-$$) db 0

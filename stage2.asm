@@ -41,10 +41,11 @@ _start:
 
     ; setup registers for disk load call
     mov bx, KERNEL_OFFSET ; bx -> destination
-    mov dh, 4             ; dh -> num sectors
-    mov dl, [bisos_disk_num]
-    mov cl, 0x05 ; start from sector 4
-                 ; (as sectors 1-4 are our bootloader)
+    mov al, 5             ; dh -> num sectors
+    mov ch, 0x00 ; cylinder 0
+    mov dh, 0x00 ; head 0
+    mov cl, 0x05 ; start from sector 5
+                 ; (as sectors 1-4 is our boot loader)
 
     ; load sector to disk
     call disk_load
