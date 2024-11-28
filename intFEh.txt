@@ -1,0 +1,12 @@
+int 0xFE
+
+in bisos, int FEh has a lot of different uses as the utility interrupt.
+
+
+int 0xFE/AH=0x00 - BisOS - hex byte as string
+    Arguments:
+        AL=hex byte
+        DI=pointer to where it will land in memory (a 5 byte buffer or somewhere in between 0x700 and 0x8FF because system reserves that memory for interrupt-related return data)
+
+int 0xFE/AH=0x01 - BisOS - clear return memory (in 0x700-0x8FF)
+    No Arguments

@@ -2,21 +2,9 @@ org 0x7c00
 bits 16
 
 jmp 0x0000:start
-nop
 
 ; macros
 %include "macros.asm"
-
-; constants
-STAGE2_OFFSET equ 0x7E00 ; where to load the kernel to
-
-; symbols
-BOOT_DRIVE:
-    db 0x00
-
-; includes
-includes:
-    %include "disk.asm"
 
 ; entry point
 start:
@@ -29,8 +17,17 @@ start:
     ; load sector to disk
     call disk_load
 
-    call STAGE2_OFFSET
-    jmp $
+    jmp STAGE2_OFFSET
+
+; includes
+includes:
+    %include "disk.asm"
+
+; constants
+STAGE2_OFFSET equ 0x7E00 ; where to load the kernel to
+
+; symbols
+BOOT_DRIVE: db 0
 
 ; padding to 510 to fit the last two bytes
 times (510-($-$$)) db 0

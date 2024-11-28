@@ -1,8 +1,53 @@
 db " put.asm "
 %include "put.asm"
+db " hta.asm "
+%include "hta.asm"
+db " crm.asm "
+%include "crm.asm"
+
+setupinterrupts:
+    push ax
+    cli
+    xor ax, ax
+    mov es, ax
+    mov word [es:0x84 * 4], int84h
+    mov word [es:0x84 * 4 + 2], cs
+    mov word [es:0x85 * 4], int85h
+    mov word [es:0x85 * 4 + 2], cs
+    mov word [es:0xFE * 4], intFEh
+    mov word [es:0xFE * 4 + 2], cs
+    sti
+    pop ax
+    ret
+
+;
+; int84h (set system data)
+; description: sets the bisos-specific data in whereever specified by ah (reserves space 0x500 to 0x6FF)
+; arguments: ah - type
+;            dx - data (usually only the lower half is used)
+;
+db " int84h "
+global int84h
+int84h:
+    cmp ah, 0x00
+    je .preferredputmode
+
+    jmp .badAH
+.preferredputmode:
+    mov [0x500], dl
+    iret
+.msgBadAH: db "bad AH value. needs to be 00-04", CRLFNULL
+.badAH:
+    mov si,.msgBadAH
+    call puts
+    cli
+    hlt
+
+    iret
 
 ;
 ; int85h (put)
+; description: puts bx (whether it be a pointer or a character) to standard output
 ; arguments: ah - type of put
 ;            bx - putdata
 ;            cx - length (if ah is 0x01)
@@ -51,7 +96,7 @@ int85h:
     call puts     ; Call puts
     jmp .return   ; Return from interrupt
 .crlf: db CRLFNULL
-.msgBadAH: db "bad AH value. needs to be 00-05", CRLFNULL
+.msgBadAH: db "bad AH value. needs to be 00-04", CRLFNULL
 .badAH:
     mov si,.msgBadAH
     call puts
@@ -63,25 +108,32 @@ int85h:
     iret
 
 ;
-; int84h (set system data)
-; arguments: ah - type
-;            dx - data (usually only the lower half is used)
+; intFEh (util)
+; description: random system utilities
+; read manual
 ;
-db " int84h "
-global int84h
-int84h:
-    cmp ah, 0x00
-    je .preferredputmode
+db " intFEh "
+global intFEh
+intFEh:
+    cmp ah, 0x00 ; hex to ascii
+    je .hextoascii
+
+    cmp ah, 0x01 ; clear return memory from 0x700 to 0x8ff
+    je .clearreturnmemory
 
     jmp .badAH
-.preferredputmode:
-    mov [0x500], dl
-    iret
-.msgBadAH: db "bad AH value. needs to be 00-04", CRLFNULL
+.hextoascii:
+    call hex_to_ascii
+    jmp .return   ; Return from interrupt
+.clearreturnmemory:
+    call clear_interrupt_return_data
+    jmp .return   ; Return from interrupt
+.msgBadAH: db "bad AH value. needs to be 00-01", CRLFNULL
 .badAH:
     mov si,.msgBadAH
     call puts
     cli
     hlt
-
+    jmp .return   ; Return from interrupt
+.return:
     iret

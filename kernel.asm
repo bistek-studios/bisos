@@ -26,10 +26,35 @@ _start:
     call offsetcursor
     mov ah, 0x00
     mov bx, msg_hello_world
-    int 85h
+    int 0x85
     call offsetcursor
     mov bx, msg_how
-    int 85h
+    int 0x85
+    call offsetcursor
+    mov ah, 0x00
+    mov al, 0x76
+    mov di, 0x700
+    int 0xFE
+    mov dword [0x704], 0x00000A0D
+    mov bx, 0x700
+    int 0x85
+    push 0x0100
+    call offsetcursor
+    mov dword [0x900], "test"
+    mov dword [0x904], "ing "
+    mov dword [0x908], "the "
+    mov dword [0x90C], "hex "
+    mov dword [0x910], "to a"
+    mov dword [0x914], "scii"
+    mov dword [0x918], " fea"
+    mov dword [0x91C], "ture"
+    mov byte [0x920], 0x0D
+    mov byte [0x921], 0x0A
+    mov byte [0x922], 0
+    mov ah, 0
+    mov bx, 0x900
+    int 0x85
+    add sp, 2
     call offsetcursor
     add sp, 2
     jmp typingsimulator2023
@@ -211,9 +236,9 @@ dword_help: db "help"
 ; buffer
 buffer:
     EMPTY equ $-buffer
-    times 1024-($-buffer) db 0
+    times 256-($-buffer) db 0
 bufferpointer: dw EMPTY
 bufferdecoded: times 2 db 0
 
 db "magic padding"
-times 4096-($-$$) db 0
+times 2048-($-$$) db 0

@@ -24,7 +24,7 @@ _start:
     push dx
     mov ah, 0x00
     mov dl, 0x01
-    int 84h
+    int 0x84
     pop dx
     pop ax
     
@@ -49,21 +49,8 @@ _start:
 
     mov ah, 0
     mov bx, msg_failure
-    int 85h
+    int 0x85
     jmp $
-
-setupinterrupts:
-    push ax
-    cli
-    xor ax, ax
-    mov es, ax
-    mov word [es:0x85 * 4], int85h
-    mov word [es:0x85 * 4 + 2], cs
-    mov word [es:0x84 * 4], int84h
-    mov word [es:0x84 * 4 + 2], cs
-    sti
-    pop ax
-    ret
 
 db " includes "
 db " interrupts.asm "

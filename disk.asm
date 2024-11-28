@@ -11,13 +11,6 @@ disk_load:
     ; es:bx = buffer pointer is set as input as well
 
     int 0x13      ; BIOS interrupt
-    jc disk_error ; check carry bit for error
 
     popa
     ret
-
-disk_error:
-    jmp disk_loop
-
-disk_loop:
-    jmp $
