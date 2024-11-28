@@ -1,9 +1,10 @@
-sudo nasm boot.asm -f bin -o boot.bin
-sudo nasm stage2.asm -f bin -o stage2.bin
-sudo nasm kernel.asm -f bin -o kernel.bin
-sudo cat boot.bin stage2.bin kernel.bin > OS.bin
-sudo cp OS.bin BisOS.img
-sudo truncate -s 1440k BisOS.img
+nasm boot.asm -f bin -o boot.bin
+nasm stage2.asm -f bin -o stage2.bin
+nasm kernel.asm -f bin -o kernel.bin
+cat boot.bin stage2.bin > bootloader.bin
+cat bootloader.bin kernel.bin > OS.bin
+cp OS.bin BisOS.img
+truncate -s 1440k BisOS.img
 
 if [ $1 ]
 

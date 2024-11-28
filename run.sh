@@ -1,1 +1,1 @@
-qemu-system-i386 -fda OS.bin
+qemu-system-i386 -fda BisOS.img

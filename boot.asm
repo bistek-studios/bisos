@@ -10,7 +10,7 @@ jmp 0x0000:start
 start:
     ; setup registers for disk load call
     mov bx, STAGE2_OFFSET ; bx -> destination
-    mov dh, 2             ; dh -> num sectors
+    mov dh, 3             ; dh -> num sectors
     mov cl, 0x02 ; start from sector 2
                  ; (as sector 1 is our boot sector)
 

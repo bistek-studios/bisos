@@ -10,6 +10,7 @@ nop
 bisos_name: db "BISOS bootloader stage 2"
 bisos_version: db "1.x"
 bisos_information: db " created by bis "
+bisos_disk_num: db 0
 
 db " code "
 global _start
@@ -28,6 +29,8 @@ _start:
     pop dx
     pop ax
     
+    mov [bisos_disk_num], dl
+
     push ax
     push bx
     mov ah, 0
@@ -39,8 +42,9 @@ _start:
     ; setup registers for disk load call
     mov bx, KERNEL_OFFSET ; bx -> destination
     mov dh, 4             ; dh -> num sectors
-    mov cl, 0x04 ; start from sector 4
-                 ; (as sectors 1-3 are our bootloader)
+    mov dl, [bisos_disk_num]
+    mov cl, 0x05 ; start from sector 4
+                 ; (as sectors 1-4 are our bootloader)
 
     ; load sector to disk
     call disk_load
@@ -64,5 +68,4 @@ msg_failure: db "failed to load kernel into memory", CRLFNULL
 msg_loading: db "loading kernel", CRLFNULL
 KERNEL_OFFSET equ 0x8400
 
-db "magic padding"
-times 1024-($-$$) db 0
+times 1536-($-$$) db 0

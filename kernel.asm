@@ -10,24 +10,13 @@ nop
 bisos_name: db "BISOS kernel"
 bisos_version: db "1.x"
 bisos_information: db " created by bis "
+bisos_disk_num: db 0
 
 db " code "
 global _start
 _start:
-    push 79
-    push 24
-    push 0x02
-    call clearscreen
-    add sp, 6
-    push 0x0000
-    call movecursor
-    add sp, 2
-    push 0x0101
-    call offsetcursor
-    mov ah, 0x00
-    mov bx, msg_hello_world
-    int 0x85
-    call offsetcursor
+    mov [bisos_disk_num], dl
+    call clearthescreen
     mov bx, msg_how
     int 0x85
     call offsetcursor
@@ -40,21 +29,11 @@ _start:
     int 0x85
     push 0x0100
     call offsetcursor
-    mov dword [0x900], "test"
-    mov dword [0x904], "ing "
-    mov dword [0x908], "the "
-    mov dword [0x90C], "hex "
-    mov dword [0x910], "to a"
-    mov dword [0x914], "scii"
-    mov dword [0x918], " fea"
-    mov dword [0x91C], "ture"
-    mov byte [0x920], 0x0D
-    mov byte [0x921], 0x0A
-    mov byte [0x922], 0
+    mov bx, msg_test
     mov ah, 0
-    mov bx, 0x900
     int 0x85
     add sp, 2
+    push 0x0101
     call offsetcursor
     add sp, 2
     jmp typingsimulator2023
@@ -119,8 +98,20 @@ typingsimulator2023:
     mov eax, dword [buffer]
     mov ebx, dword [dword_help]
     cmp eax, ebx
-    jne .finishdetectingdwords
+    jne .rstr
     call helpmsg
+.rstr:
+    mov eax, dword [buffer]
+    mov ebx, dword [dword_rstr]
+    cmp eax, ebx
+    jne .clrs
+    jmp 0x0000:0x7c00
+.clrs:
+    mov eax, dword [buffer]
+    mov ebx, dword [dword_clrs]
+    cmp eax, ebx
+    jne .finishdetectingdwords
+    call clearthescreen
 .finishdetectingdwords:
     pop ebx
     pop eax
@@ -192,6 +183,8 @@ escaped:
     push msg_escaped
     call puts
     add sp, 2
+    call scanc
+
     jmp $
 
 clearbuffer:
@@ -219,6 +212,24 @@ helpmsg:
     pop bp
     ret
 
+clearthescreen:
+    push 79
+    push 24
+    push 0x02
+    call clearscreen
+    add sp, 6
+    push 0x0000
+    call movecursor
+    add sp, 2
+    push 0x0101
+    call offsetcursor
+    mov ah, 0x00
+    mov bx, msg_hello_world
+    int 0x85
+    call offsetcursor
+    add sp, 2
+    ret
+
 db " includes "
 db "  stdio.asm  "
 %include "stdio.asm"
@@ -230,8 +241,11 @@ msg_hello_world: db "TYPING SIMULATOR 2023", CRLFNULL
 msg_how: db "to exit this mode, well, good luck...", CRLFNULL
 msg_escaped: db "you have escaped from typing simulator 2023. it was nice meeting you.", CRLFNULL
 msg_help: db "well your heart's in the right place. commands are the way to go here", CRLFNULL
+msg_test: db "^^^^ testing the hex to ascii feature built into bisos (int 0xFE/ah 0x00)", CRLFNULL
 dword_exit: db "exit"
 dword_help: db "help"
+dword_rstr: db "rstr"
+dword_clrs: db "clrs"
 
 ; buffer
 buffer:
@@ -240,5 +254,4 @@ buffer:
 bufferpointer: dw EMPTY
 bufferdecoded: times 2 db 0
 
-db "magic padding"
 times 2048-($-$$) db 0
